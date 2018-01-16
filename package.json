@@ -1,12 +1,16 @@
 {
   "name": "halo-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "初始化移动端vue项目cli脚手架",
   "bin": {
     "biu": "./bin/halo.js"
   },
   "main": "index.js",
   "author": "Michael Gong",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MichaelGong/halo-cli.git"
+  },
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.26.0",

@@ -1,12 +1,12 @@
 {
-  "name": "project-cli",
+  "name": "halo-cli",
   "version": "0.0.1",
-  "description": "初始化项目cli脚手架",
+  "description": "初始化移动端vue项目cli脚手架",
   "bin": {
-    "biu": "./bin/biu.js"
+    "biu": "./bin/halo.js"
   },
   "main": "index.js",
-  "author": "Gong Hao",
+  "author": "Michael Gong",
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.26.0",

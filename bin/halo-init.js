@@ -10,6 +10,7 @@ const render = require('consolidate').handlebars.render;
 const checkDir = require('../lib/dir');
 const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
+const installDependencies = require('../lib/installDependencies').installDependencies;
 
 const gitRepoUrl = 'https://github.com:MichaelGong/vue-template#master';
 
@@ -87,13 +88,20 @@ function initMetalsmith(pathParam, metadata = {}, dest = '.') {
         console.log(err);
         return;
       }
-      console.log('Build finished!');
+      console.log('');
+      console.log('项目已经生成');
+      console.log('');
+      if (metadata.install === 'npm' || metadata.install === 'yarn') {
+        installDependencies(pathParam, metadata.install)
+          .then(() => {
+            console.log('# 依赖安装完毕');
+          });
+      }
     });
 }
 
 program
-  .usage('<project-name>')
-  .parse(process.argv);
+  .usage('<project-name>');
 
 program.on('--help', genereateHelp);
 

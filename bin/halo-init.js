@@ -11,7 +11,7 @@ const checkDir = require('../lib/dir');
 const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
 
-const gitRepoUrl = 'https://github.com:MichaelGong/generator-vuetemplate#template';
+const gitRepoUrl = 'https://github.com:MichaelGong/vue-template#master';
 
 /**
  * 输出help信息
@@ -21,7 +21,7 @@ function genereateHelp() {
   console.log();
   console.log(chalkColor('  Examples:'));
   console.log(chalk.gray('    # create a new project by name'));
-  console.log(chalkColor('    $ biu init my-project'));
+  console.log(chalkColor('    $ halo init my-project'));
   console.log();
 }
 
@@ -64,7 +64,7 @@ function initMetalsmith(pathParam, metadata = {}, dest = '.') {
   Metalsmith(pathParam)
     .metadata(metadata)
     .clean(false)
-    .source('.')
+    .source('./template')
     .destination(dest)
     .ignore(path.resolve(pathParam, './generators/app/templates'))
     .use((files, metalsmith, done) => {

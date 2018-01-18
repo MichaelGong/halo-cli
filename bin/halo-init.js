@@ -9,6 +9,8 @@ const initMetalsmith = require('../lib/initMetalsmith');
 const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
 const installDependencies = require('../lib/installDependencies').installDependencies;
+const checkLatest = require('../lib/checkLatest');
+const version = require('../package.json').version;
 
 // git 仓库地址，请注意格式：中间是“:”，且最后没有“.git”
 const gitRepoUrl = 'https://github.com:MichaelGong/vue-template';
@@ -47,9 +49,11 @@ const tmpPath = path.join(__dirname, 'tmp');
 let projectPath = '.'; // 项目路径
 let metaData; // 用户输入的信息
 
-// 删除tmp下之前下载的文件
+// 删除tmp中之前下载的文件
 fs.removeSync(path.resolve(__dirname, 'tmp'));
-
+// 判断当前版本与npm的版本
+checkLatest.getLatestVersion();
+// 判断项目目录状态
 checkProjectDir(projectName, cwd, rootDir)
   .then((pathParam) => {
     projectPath = pathParam; // 项目路径
@@ -74,6 +78,11 @@ checkProjectDir(projectName, cwd, rootDir)
           console.log(chalk.cyan('  npm run dev'));
           console.log('');
         });
+    }
+  })
+  .then(() => {
+    if (!checkLatest.isLatestVersion) {
+      console.log(chalk.cyan(`\n halo-cli当前版本${version}，最新版本${checkLatest.versionRemote}，请更新`));
     }
   })
   .catch((err) => {

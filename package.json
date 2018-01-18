@@ -1,6 +1,6 @@
 {
   "name": "halo-cli",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "初始化移动端vue项目cli脚手架",
   "bin": {
     "halo": "./bin/halo.js"

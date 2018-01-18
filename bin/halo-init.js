@@ -2,17 +2,16 @@
 
 const program = require('commander');
 const chalk = require('chalk');
-const fs = require('fs-extra');
+const fs = require('fs-plus');
 const path = require('path');
-const Metalsmith = require('metalsmith');
-const render = require('consolidate').handlebars.render;
-const checkDir = require('../lib/dir');
+const checkProjectDir = require('../lib/dir').checkProjectDir;
 const initMetalsmith = require('../lib/initMetalsmith');
 const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
 const installDependencies = require('../lib/installDependencies').installDependencies;
 
-const gitRepoUrl = 'https://github.com:MichaelGong/vue-template#master';
+// git 仓库地址，请注意格式：中间是“:”，且最后没有“.git”
+const gitRepoUrl = 'https://github.com:MichaelGong/vue-template';
 
 /**
  * 输出help信息
@@ -26,87 +25,13 @@ function genereateHelp() {
   console.log();
 }
 
-// 检查项目目录是否存在
-function checkProjectDir(projectName, locationPath, rootDir) {
-  return new Promise((resolve, reject) => {
-    if (projectName) { // 传入了项目名称
-      if (checkDir.isEmptyDir(locationPath)) { // 空文件夹
-        if (rootDir === projectName) {
-          resolve(locationPath);
-        } else {
-          resolve(path.resolve(locationPath, projectName));
-        }
-      } else if (fs.existsSync(path.resolve(locationPath, projectName))) {
-        console.log(chalk.yellow(`  ${projectName}项目已存在`));
-        reject();
-      } else {
-        resolve(path.resolve(locationPath, projectName));
-      }
-    } else { // 没有传入项目名称
-      // 这里基本是不会走进来的
-      program.help();
-      reject();
-    }
-  });
-}
-
-function downloadAndGenerateFunc() {
-  return downloadAndGenerate(gitRepoUrl, path.join(__dirname, 'tmp'), true)
-    .catch((err) => {
-      console.log(err);
-    });
-}
-/**
- * @param {*} pathParam 项目路径
- * @param {*} metadata 数据
- * @param {*} dest 目标目录
- */
-// function initMetalsmith(pathParam, metadata = {}, dest = '.') {
-//   Metalsmith(pathParam)
-//     .metadata(metadata)
-//     .clean(false)
-//     .source('./template')
-//     .destination(dest)
-//     .ignore(path.resolve(pathParam, './generators/app/templates'))
-//     .use((files, metalsmith, done) => {
-//       Object.keys(files).forEach((file) => {
-//         const str = files[file].contents.toString();
-//         if (!/{{([^{}]+)}}/g.test(str)) {
-//           return done();
-//         }
-//         render(str, metadata, (err, res) => {
-//           if (err) {
-//             console.log(err);
-//           }
-//           files[file].contents = Buffer.from(res);
-//           done();
-//         });
-//       });
-//     })
-//     .build(function(err) {
-//       if (err) {
-//         console.log(err);
-//         return;
-//       }
-//       console.log('');
-//       console.log('项目已经生成');
-//       console.log('');
-//       if (metadata.install === 'npm' || metadata.install === 'yarn') {
-//         installDependencies(pathParam, metadata.install)
-//           .then(() => {
-//             console.log('# 依赖安装完毕');
-//           });
-//       }
-//     });
-// }
-
 program
   .usage('<project-name>')
-  .option('-b, --branch <branch>', '分支名', 'master');
+  .option('-b, --branch <branch>', '分支名', 'master'); // 允许指定分支（暂时就一个分支：master）
 
 program.on('--help', genereateHelp);
 
-program.parse(process.argv);
+program.parse(process.argv); // 处理参数
 // 参数
 const args = program.args;
 
@@ -116,29 +41,34 @@ if (args && args.length < 1) {
 }
 
 const projectName = program.args[0]; // 项目名称
-const locationPath = process.cwd(); // 当前执行node的路径
-const rootDir = path.basename(locationPath); // 根文件夹的名字
-let projectPath = '.';
-let metaData;
+const cwd = process.cwd(); // 当前执行node的路径
+const rootDir = path.basename(cwd); // 根文件夹的名字
+const tmpPath = path.join(__dirname, 'tmp');
+let projectPath = '.'; // 项目路径
+let metaData; // 用户输入的信息
 
+// 删除tmp下之前下载的文件
 fs.removeSync(path.resolve(__dirname, 'tmp'));
 
-checkProjectDir(projectName, locationPath, rootDir)
+checkProjectDir(projectName, cwd, rootDir)
   .then((pathParam) => {
-    projectPath = pathParam;
+    projectPath = pathParam; // 项目路径
     // 用户交互输入信息
     return inquirerFunc(projectName);
   })
   .then((params) => {
-    metaData = params;
-    // 下载远程代码
-    return downloadAndGenerateFunc();
+    metaData = params; // 用户输入的信息
+    // 下载远程代码：git路径添加分支，下载到命令所在位置的tmp文件夹下，clone模式
+    return downloadAndGenerate(`${gitRepoUrl}#${program.branch}`, tmpPath, true);
   })
-  .then(() => initMetalsmith(projectPath, metaData, path.join(__dirname, 'tmp', './template'), '.'))
+  .then(() => initMetalsmith(tmpPath, metaData, path.join(tmpPath, 'template'), projectPath))
   .then(() => {
+    // 如果选择了安装依赖，就进行依赖安装
     if (metaData.install !== 'not') {
       return installDependencies(projectPath, metaData.install)
         .then(() => {
+          console.log('');
+          console.log('To Start:');
           console.log('');
           console.log(chalk.cyan(`  cd ${projectName}`));
           console.log(chalk.cyan('  npm run dev'));
@@ -147,5 +77,7 @@ checkProjectDir(projectName, locationPath, rootDir)
     }
   })
   .catch((err) => {
-    console.log(chalk.yellow(`  ${err}`));
+    if (err) {
+      console.log(chalk.yellow(`  ${err}`));
+    }
   });

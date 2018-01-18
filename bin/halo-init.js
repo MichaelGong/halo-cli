@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-/* eslint-disable prefer-destructuring */
 const program = require('commander');
 const chalk = require('chalk');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const Metalsmith = require('metalsmith');
 const render = require('consolidate').handlebars.render;
 const checkDir = require('../lib/dir');
+const initMetalsmith = require('../lib/initMetalsmith');
 const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
 const installDependencies = require('../lib/installDependencies').installDependencies;
@@ -50,8 +50,8 @@ function checkProjectDir(projectName, locationPath, rootDir) {
   });
 }
 
-function downloadAndGenerateFunc(pathParam) {
-  return downloadAndGenerate(gitRepoUrl, pathParam, true)
+function downloadAndGenerateFunc() {
+  return downloadAndGenerate(gitRepoUrl, path.join(__dirname, 'tmp'), true)
     .catch((err) => {
       console.log(err);
     });
@@ -61,47 +61,48 @@ function downloadAndGenerateFunc(pathParam) {
  * @param {*} metadata 数据
  * @param {*} dest 目标目录
  */
-function initMetalsmith(pathParam, metadata = {}, dest = '.') {
-  Metalsmith(pathParam)
-    .metadata(metadata)
-    .clean(false)
-    .source('./template')
-    .destination(dest)
-    .ignore(path.resolve(pathParam, './generators/app/templates'))
-    .use((files, metalsmith, done) => {
-      Object.keys(files).forEach((file) => {
-        const str = files[file].contents.toString();
-        if (!/{{([^{}]+)}}/g.test(str)) {
-          return done();
-        }
-        render(str, metadata, (err, res) => {
-          if (err) {
-            console.log(err);
-          }
-          files[file].contents = Buffer.from(res);
-          done();
-        });
-      });
-    })
-    .build(function(err) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log('');
-      console.log('项目已经生成');
-      console.log('');
-      if (metadata.install === 'npm' || metadata.install === 'yarn') {
-        installDependencies(pathParam, metadata.install)
-          .then(() => {
-            console.log('# 依赖安装完毕');
-          });
-      }
-    });
-}
+// function initMetalsmith(pathParam, metadata = {}, dest = '.') {
+//   Metalsmith(pathParam)
+//     .metadata(metadata)
+//     .clean(false)
+//     .source('./template')
+//     .destination(dest)
+//     .ignore(path.resolve(pathParam, './generators/app/templates'))
+//     .use((files, metalsmith, done) => {
+//       Object.keys(files).forEach((file) => {
+//         const str = files[file].contents.toString();
+//         if (!/{{([^{}]+)}}/g.test(str)) {
+//           return done();
+//         }
+//         render(str, metadata, (err, res) => {
+//           if (err) {
+//             console.log(err);
+//           }
+//           files[file].contents = Buffer.from(res);
+//           done();
+//         });
+//       });
+//     })
+//     .build(function(err) {
+//       if (err) {
+//         console.log(err);
+//         return;
+//       }
+//       console.log('');
+//       console.log('项目已经生成');
+//       console.log('');
+//       if (metadata.install === 'npm' || metadata.install === 'yarn') {
+//         installDependencies(pathParam, metadata.install)
+//           .then(() => {
+//             console.log('# 依赖安装完毕');
+//           });
+//       }
+//     });
+// }
 
 program
-  .usage('<project-name>');
+  .usage('<project-name>')
+  .option('-b, --branch <branch>', '分支名', 'master');
 
 program.on('--help', genereateHelp);
 
@@ -117,18 +118,34 @@ if (args && args.length < 1) {
 const projectName = program.args[0]; // 项目名称
 const locationPath = process.cwd(); // 当前执行node的路径
 const rootDir = path.basename(locationPath); // 根文件夹的名字
+let projectPath = '.';
+let metaData;
+
+fs.removeSync(path.resolve(__dirname, 'tmp'));
 
 checkProjectDir(projectName, locationPath, rootDir)
   .then((pathParam) => {
+    projectPath = pathParam;
     // 用户交互输入信息
-    inquirerFunc(projectName)
-      .then((params) => {
-        // 下载远程代码
-        downloadAndGenerateFunc(pathParam)
-          .then(() => {
-            // 初始化项目
-            initMetalsmith(pathParam, params);
-          });
-      });
+    return inquirerFunc(projectName);
   })
-  .catch(() => {});
+  .then((params) => {
+    metaData = params;
+    // 下载远程代码
+    return downloadAndGenerateFunc();
+  })
+  .then(() => initMetalsmith(projectPath, metaData, path.join(__dirname, 'tmp', './template'), '.'))
+  .then(() => {
+    if (metaData.install !== 'not') {
+      return installDependencies(projectPath, metaData.install)
+        .then(() => {
+          console.log('');
+          console.log(chalk.cyan(`  cd ${projectName}`));
+          console.log(chalk.cyan('  npm run dev'));
+          console.log('');
+        });
+    }
+  })
+  .catch((err) => {
+    console.log(chalk.yellow(`  ${err}`));
+  });

@@ -11,3 +11,8 @@ yarn global add halo-cli
 ``` bash
 halo init 项目名称
 ```
+
+### 本地测试命令
+``` bash
+node ../halo-cli/bin/halo.js // 相对路径即可
+```

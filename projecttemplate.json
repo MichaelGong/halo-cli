@@ -1,0 +1,6 @@
+{
+  "react": "react test",
+  "vue": "git@github.com:MichaelGong/vue-template.git#master",
+  "vue2": "https://github.com/MichaelGong/vue-template.git",
+  "react-redux": "test-react-redux"
+}

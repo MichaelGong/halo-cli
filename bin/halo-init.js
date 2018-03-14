@@ -10,8 +10,9 @@ const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
 // const installDependencies = require('../lib/installDependencies').installDependencies;
 const checkLatest = require('../lib/checkLatest');
-// const version = require('../package.json').version;
+const version = require('../package.json').version;
 const templateJson = require('../projecttemplate.json');
+const { isLocalPath } = require('../lib/util');
 
 const tmpDir = '.tmp'; // tmp文件夹名字
 
@@ -43,7 +44,7 @@ const templateName = args[0]; // 模板名称
 const projectName = args[1]; // 项目名称
 const cwd = process.cwd(); // 当前执行node的路径
 const rootDir = path.basename(cwd); // 根文件夹的名字
-const tmpPath = path.join(__dirname, tmpDir, templateName);
+let tmpPath = path.join(__dirname, tmpDir, templateName);
 
 if (!templateJson[templateName]) {
   console.log('');
@@ -51,7 +52,9 @@ if (!templateJson[templateName]) {
   console.log('');
   return;
 }
-
+if (isLocalPath(templateJson[templateName])) {
+  tmpPath = templateJson[templateName];
+}
 let projectPath = '.'; // 项目路径
 let metaData; // 用户输入的信息
 let metaJson; // 模板项目中的meta.js中的内容
@@ -72,17 +75,21 @@ checkProjectDir(projectName, cwd, rootDir)
     metaJson = params.metaJson;
     return initMetalsmith(tmpPath, metaData, path.join(tmpPath, 'template'), projectPath);
   })
-  .then(() => {
+  .then(() => new Promise((resolve) => {
     if (metaJson.complete && typeof metaJson.complete === 'function') {
       metaJson.complete({
         metaData,
         projectPath,
+      }).then(() => {
+        resolve();
       });
+    } else {
+      resolve();
     }
-  })
+  }))
   .then(() => {
     if (!checkLatest.isLatestVersion) {
-      // console.log(chalk.cyan(`\n halo-cli当前版本${version}，最新版本${checkLatest.versionRemote}，请更新`));
+      console.log(chalk.cyan(`\n halo-cli当前版本${version}，最新版本${checkLatest.versionRemote}，请更新\n`));
     }
   })
   .catch((err) => {

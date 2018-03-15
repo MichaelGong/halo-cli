@@ -91,7 +91,6 @@ checkProjectDir(projectName, cwd, rootDir)
     console.log('');
     console.log('  项目初始化成功');
     console.log('');
-
     if (!checkLatest.isLatestVersion) {
       console.log(chalk.cyan(`\n halo-cli当前版本${version}，最新版本${checkLatest.versionRemote}，请更新\n`));
     }

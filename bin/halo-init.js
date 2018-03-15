@@ -80,6 +80,8 @@ checkProjectDir(projectName, cwd, rootDir)
       metaJson.complete({
         metaData,
         projectPath,
+      }, {
+        chalk
       }).then(() => {
         resolve();
       });

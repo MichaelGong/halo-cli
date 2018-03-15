@@ -341,6 +341,13 @@ camelcase@^1.0.2:
   version "1.2.1"
   resolved "http://registry.npm.taobao.org/camelcase/download/camelcase-1.2.1.tgz#9bb5304d2e0b56698b2c758b08a3eaa9daa58a39"
 
+capture-spawn@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/capture-spawn/download/capture-spawn-1.0.1.tgz#0f3b01fcefb59cc808b7bad04dab8eec0ec85ccd"
+  dependencies:
+    error-base "^0.2.0"
+    is-child-process "^1.0.0"
+
 capture-stack-trace@^1.0.0:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/capture-stack-trace/download/capture-stack-trace-1.0.1.tgz#ed0a1edb87c05d4db1037c5f8f483d8a3b5f0825"
@@ -439,9 +446,15 @@ co@^4.6.0:
   version "4.6.0"
   resolved "http://registry.npm.taobao.org/co/download/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
 
-coffee-script@^1.12.4:
+coffee-script@^1.12.4, coffee-script@^1.7.1:
   version "1.12.7"
   resolved "http://registry.npm.taobao.org/coffee-script/download/coffee-script-1.12.7.tgz#c05dae0cb79591d05b3070a8433a98c9a89ccc53"
+
+coffee-script@~1.7.1:
+  version "1.7.1"
+  resolved "http://registry.npm.taobao.org/coffee-script/download/coffee-script-1.7.1.tgz#62996a861780c75e6d5069d13822723b73404bfc"
+  dependencies:
+    mkdirp "~0.3.5"
 
 color-convert@^1.9.0:
   version "1.9.1"
@@ -521,6 +534,16 @@ cross-spawn@^5.1.0:
   resolved "http://registry.npm.taobao.org/cross-spawn/download/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
   dependencies:
     lru-cache "^4.0.1"
+    shebang-command "^1.2.0"
+    which "^1.2.9"
+
+cross-spawn@^6.0.5:
+  version "6.0.5"
+  resolved "http://registry.npm.taobao.org/cross-spawn/download/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
+  dependencies:
+    nice-try "^1.0.4"
+    path-key "^2.0.1"
+    semver "^5.5.0"
     shebang-command "^1.2.0"
     which "^1.2.9"
 
@@ -692,6 +715,10 @@ end-of-stream@^1.0.0:
 entities@^1.1.1, entities@~1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/entities/download/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
+
+error-base@^0.2.0:
+  version "0.2.0"
+  resolved "http://registry.npm.taobao.org/error-base/download/error-base-0.2.0.tgz#4533d660a483607bc12d061a6b57fccefc9a2cdb"
 
 error-ex@^1.2.0:
   version "1.3.1"
@@ -1137,7 +1164,7 @@ inherits@2, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.3"
   resolved "http://registry.npm.taobao.org/inherits/download/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
-ini@^1.3.4, ini@~1.3.0:
+ini@^1.3.4, ini@^1.3.5, ini@~1.3.0:
   version "1.3.5"
   resolved "http://registry.npm.taobao.org/ini/download/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
 
@@ -1199,7 +1226,14 @@ is-builtin-module@^1.0.0:
   dependencies:
     builtin-modules "^1.0.0"
 
-is-extendable@^0.1.0:
+is-child-process@^1.0.0:
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/is-child-process/download/is-child-process-1.0.2.tgz#c22961acd629e128cb008ed6355b3bcbf85d9bd8"
+  dependencies:
+    is-node-emitter "^1.0.2"
+    isarray "^1.0.0"
+
+is-extendable@^0.1.0, is-extendable@^0.1.1:
   version "0.1.1"
   resolved "http://registry.npm.taobao.org/is-extendable/download/is-extendable-0.1.1.tgz#62b110e289a471418e3ec36a617d472e301dfc89"
 
@@ -1216,6 +1250,13 @@ is-fullwidth-code-point@^2.0.0:
 is-natural-number@^4.0.1:
   version "4.0.1"
   resolved "http://registry.npm.taobao.org/is-natural-number/download/is-natural-number-4.0.1.tgz#ab9d76e1db4ced51e35de0c72ebecf09f734cde8"
+
+is-node-emitter@^1.0.2:
+  version "1.0.6"
+  resolved "http://registry.npm.taobao.org/is-node-emitter/download/is-node-emitter-1.0.6.tgz#807a8b0194ceccf99b6f7d5e95a39f1c957eaa36"
+  dependencies:
+    is-real-object "^1.0.1"
+    isarray "^1.0.0"
 
 is-object@^1.0.1:
   version "1.0.1"
@@ -1240,6 +1281,13 @@ is-path-inside@^1.0.0:
 is-promise@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/is-promise/download/is-promise-2.1.0.tgz#79a2a9ece7f096e80f36d2b2f3bc16c1ff4bf3fa"
+
+is-real-object@^1.0.1:
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/is-real-object/download/is-real-object-1.0.2.tgz#dd170ead88829c38c5d4b430596d91e2b9773883"
+  dependencies:
+    is-extendable "^0.1.1"
+    isarray "^1.0.0"
 
 is-redirect@^1.0.0:
   version "1.0.0"
@@ -1279,6 +1327,12 @@ isurl@^1.0.0-alpha5:
   dependencies:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
+
+jistype@0.0.3:
+  version "0.0.3"
+  resolved "http://registry.npm.taobao.org/jistype/download/jistype-0.0.3.tgz#6560f6011d4a35d5ac0ff63d9c56eaaeffc95f34"
+  dependencies:
+    coffee-script "^1.7.1"
 
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
@@ -1471,6 +1525,10 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mkdirp@~0.3.5:
+  version "0.3.5"
+  resolved "http://registry.npm.taobao.org/mkdirp/download/mkdirp-0.3.5.tgz#de3e5f8961c88c787ee1368df849ac4413eca8d7"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/ms/download/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -1491,6 +1549,18 @@ mute-stream@0.0.7:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "http://registry.npm.taobao.org/natural-compare/download/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+
+nice-try@^1.0.4:
+  version "1.0.4"
+  resolved "http://registry.npm.taobao.org/nice-try/download/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
+
+node-echo@^0.1.1:
+  version "0.1.1"
+  resolved "http://registry.npm.taobao.org/node-echo/download/node-echo-0.1.1.tgz#49e2ef18214f51cdadacee39f344002f676851de"
+  dependencies:
+    coffee-script "~1.7.1"
+    jistype "0.0.3"
+    mkdirp "~0.3.5"
 
 normalize-package-data@^2.3.2:
   version "2.4.0"
@@ -1611,6 +1681,10 @@ path-is-absolute@^1.0.0, path-is-absolute@^1.0.1:
 path-is-inside@^1.0.1, path-is-inside@^1.0.2:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/path-is-inside/download/path-is-inside-1.0.2.tgz#365417dede44430d1c11af61027facf074bdfc53"
+
+path-key@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/path-key/download/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
 
 path-parse@^1.0.5:
   version "1.0.5"
@@ -1781,7 +1855,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@^2.2.8, rimraf@^2.5.2, rimraf@^2.6.1:
+rimraf@^2.2.8, rimraf@^2.5.2, rimraf@^2.6.1, rimraf@^2.6.2:
   version "2.6.2"
   resolved "http://registry.npm.taobao.org/rimraf/download/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
   dependencies:
@@ -1817,7 +1891,7 @@ seek-bzip@^1.0.5:
   version "5.4.1"
   resolved "http://registry.npm.taobao.org/semver/download/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
 
-semver@^5.1.0:
+semver@^5.1.0, semver@^5.5.0:
   version "5.5.0"
   resolved "https://registry.npmjs.org/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
 

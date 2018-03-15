@@ -2,18 +2,21 @@
 
 const program = require('commander');
 const chalk = require('chalk');
-const fs = require('fs-plus');
 const path = require('path');
+const rm = require('rimraf').sync;
 const checkProjectDir = require('../lib/dir').checkProjectDir;
 const initMetalsmith = require('../lib/initMetalsmith');
 const downloadAndGenerate = require('../lib/download-git');
 const inquirerFunc = require('../lib/inquirer');
-const installDependencies = require('../lib/installDependencies').installDependencies;
+// const installDependencies = require('../lib/installDependencies').installDependencies;
 const checkLatest = require('../lib/checkLatest');
 const version = require('../package.json').version;
+const originJson = require('../projecttemplate.json');
+const { customConfig } = require('../lib/setCustomConfig');
+const { isLocalPath } = require('../lib/util');
 
-// git 仓库地址，请注意格式：中间是“:”，且最后没有“.git”
-const gitRepoUrl = 'https://github.com:MichaelGong/vue-template';
+const tmpDir = '.tmp'; // tmp文件夹名字
+const templateJson = Object.assign({}, originJson, customConfig);
 
 /**
  * 输出help信息
@@ -23,66 +26,70 @@ function genereateHelp() {
   console.log();
   console.log(chalkColor('  Examples:'));
   console.log(chalk.gray('    # create a new project by name'));
-  console.log(chalkColor('    $ halo init my-project'));
+  console.log(chalkColor('    $ halo init vue my-project'));
   console.log();
 }
-
 program
-  .usage('<project-name>')
-  .option('-b, --branch <branch>', '分支名', 'master'); // 允许指定分支（暂时就一个分支：master）
+  .usage('<template-name> <project-name>')
+  .parse(process.argv); // 处理参数
 
 program.on('--help', genereateHelp);
-
-program.parse(process.argv); // 处理参数
 // 参数
 const args = program.args;
-
 // 没有参数
-if (args && args.length < 1) {
+if (args && args.length < 2) {
   return program.help();
 }
-
-const projectName = program.args[0]; // 项目名称
+const templateName = args[0]; // 模板名称
+const projectName = args[1]; // 项目名称
 const cwd = process.cwd(); // 当前执行node的路径
 const rootDir = path.basename(cwd); // 根文件夹的名字
-const tmpPath = path.join(__dirname, 'tmp');
+let tmpPath = path.join(__dirname, tmpDir, templateName);
+
+if (!templateJson[templateName]) {
+  console.log('');
+  console.log('请先使用add命令添加该模板配置');
+  console.log('');
+  return;
+}
+if (isLocalPath(templateJson[templateName].registry)) {
+  tmpPath = templateJson[templateName].registry;
+}
 let projectPath = '.'; // 项目路径
 let metaData; // 用户输入的信息
+let metaJson; // 模板项目中的meta.js中的内容
 
 // 删除tmp中之前下载的文件
-fs.removeSync(path.resolve(__dirname, 'tmp'));
+rm(path.resolve(__dirname, tmpDir));
 // 判断当前版本与npm的版本
 checkLatest.getLatestVersion();
 // 判断项目目录状态
 checkProjectDir(projectName, cwd, rootDir)
   .then((pathParam) => {
-    projectPath = pathParam; // 项目路径
-    // 用户交互输入信息
-    return inquirerFunc(projectName);
+    projectPath = pathParam;
+    return downloadAndGenerate(`${templateJson[templateName].registry}`, tmpPath, true);
   })
+  .then(() => inquirerFunc(projectName, path.resolve(tmpPath, 'meta.js'))) // 用户交互输入信息
   .then((params) => {
-    metaData = params; // 用户输入的信息
-    // 下载远程代码：git路径添加分支，下载到命令所在位置的tmp文件夹下，clone模式
-    return downloadAndGenerate(`${gitRepoUrl}#${program.branch}`, tmpPath, true);
+    metaData = params.metaData; // 用户输入的信息
+    metaJson = params.metaJson;
+    return initMetalsmith(tmpPath, metaData, path.join(tmpPath, 'template'), projectPath);
   })
-  .then(() => initMetalsmith(tmpPath, metaData, path.join(tmpPath, 'template'), projectPath))
-  .then(() => {
-    // 如果选择了安装依赖，就进行依赖安装
-    if (metaData.install !== 'not') {
-      return installDependencies(projectPath, metaData.install)
-        .then(() => {
-          console.log('');
-          console.log('To Start:');
-          console.log('');
-          console.log(chalk.cyan(`  cd ${projectName}`));
-          console.log(chalk.cyan('  npm run dev'));
-          console.log('');
-        });
+  .then(() => new Promise((resolve) => {
+    if (metaJson.complete && typeof metaJson.complete === 'function') {
+      metaJson.complete({
+        metaData,
+        projectPath,
+      }).then(() => {
+        resolve();
+      });
+    } else {
+      resolve();
     }
-  })
+  }))
   .then(() => {
     if (!checkLatest.isLatestVersion) {
-      console.log(chalk.cyan(`\n halo-cli当前版本${version}，最新版本${checkLatest.versionRemote}，请更新`));
+      console.log(chalk.cyan(`\n halo-cli当前版本${version}，最新版本${checkLatest.versionRemote}，请更新\n`));
     }
   })
   .catch((err) => {

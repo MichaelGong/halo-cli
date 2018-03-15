@@ -1,0 +1,5 @@
+{
+  "vue": {
+    "registry": "git@github.com:MichaelGong/vue-template.git#master"
+  }
+}

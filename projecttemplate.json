@@ -1,8 +1,5 @@
 {
-  "react-local": "../../dpspace/eagleeye-client",
-  "react": "ssh://git@git.dianpingoa.com/adp/eagleeye-client.git#react-template",
-  "react2": "http://gonghao04@git.dianpingoa.com/scm/adp/eagleeye-client.git#react-template2",
-  "vue": "git@github.com:MichaelGong/vue-template.git#master",
-  "vue2": "https://github.com/MichaelGong/vue-template.git#vue-dev",
-  "react-redux": "test-react-redux"
+  "vue": {
+    "registry": "git@github.com:MichaelGong/vue-template.git#master"
+  }
 }

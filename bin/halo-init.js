@@ -11,12 +11,12 @@ const inquirerFunc = require('../lib/inquirer');
 // const installDependencies = require('../lib/installDependencies').installDependencies;
 const checkLatest = require('../lib/checkLatest');
 const version = require('../package.json').version;
-const templateJson = require('../projecttemplate.json');
+const originJson = require('../projecttemplate.json');
+const { customConfig } = require('../lib/setCustomConfig');
 const { isLocalPath } = require('../lib/util');
 
 const tmpDir = '.tmp'; // tmp文件夹名字
-
-// const gitRepoUrl = 'git@github.com:MichaelGong/vue-template.git#master';
+const templateJson = Object.assign({}, originJson, customConfig);
 
 /**
  * 输出help信息
@@ -52,8 +52,8 @@ if (!templateJson[templateName]) {
   console.log('');
   return;
 }
-if (isLocalPath(templateJson[templateName])) {
-  tmpPath = templateJson[templateName];
+if (isLocalPath(templateJson[templateName].registry)) {
+  tmpPath = templateJson[templateName].registry;
 }
 let projectPath = '.'; // 项目路径
 let metaData; // 用户输入的信息
@@ -67,7 +67,7 @@ checkLatest.getLatestVersion();
 checkProjectDir(projectName, cwd, rootDir)
   .then((pathParam) => {
     projectPath = pathParam;
-    return downloadAndGenerate(`${templateJson[templateName]}`, tmpPath, true);
+    return downloadAndGenerate(`${templateJson[templateName].registry}`, tmpPath, true);
   })
   .then(() => inquirerFunc(projectName, path.resolve(tmpPath, 'meta.js'))) // 用户交互输入信息
   .then((params) => {

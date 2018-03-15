@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 const program = require('commander');
-const templateJson = require('../projecttemplate.json');
-const setJson = require('../lib/setJson');
+const {
+  customConfig,
+  setCustomConfig,
+} = require('../lib/setCustomConfig');
 
 program
   .usage('<template name>')
@@ -14,9 +16,9 @@ if (args.length < 1) {
   return program.help();
 }
 
-delete templateJson[args[0]];
+delete customConfig[args[0]];
 
-setJson(templateJson).then((err) => {
+setCustomConfig(customConfig).then((err) => {
   if (err) throw err;
   console.log();
   console.log('    删除项目模板成功');

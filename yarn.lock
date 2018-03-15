@@ -446,9 +446,15 @@ co@^4.6.0:
   version "4.6.0"
   resolved "http://registry.npm.taobao.org/co/download/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
 
-coffee-script@^1.12.4:
+coffee-script@^1.12.4, coffee-script@^1.7.1:
   version "1.12.7"
   resolved "http://registry.npm.taobao.org/coffee-script/download/coffee-script-1.12.7.tgz#c05dae0cb79591d05b3070a8433a98c9a89ccc53"
+
+coffee-script@~1.7.1:
+  version "1.7.1"
+  resolved "http://registry.npm.taobao.org/coffee-script/download/coffee-script-1.7.1.tgz#62996a861780c75e6d5069d13822723b73404bfc"
+  dependencies:
+    mkdirp "~0.3.5"
 
 color-convert@^1.9.0:
   version "1.9.1"
@@ -1158,7 +1164,7 @@ inherits@2, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.3"
   resolved "http://registry.npm.taobao.org/inherits/download/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
-ini@^1.3.4, ini@~1.3.0:
+ini@^1.3.4, ini@^1.3.5, ini@~1.3.0:
   version "1.3.5"
   resolved "http://registry.npm.taobao.org/ini/download/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
 
@@ -1321,6 +1327,12 @@ isurl@^1.0.0-alpha5:
   dependencies:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
+
+jistype@0.0.3:
+  version "0.0.3"
+  resolved "http://registry.npm.taobao.org/jistype/download/jistype-0.0.3.tgz#6560f6011d4a35d5ac0ff63d9c56eaaeffc95f34"
+  dependencies:
+    coffee-script "^1.7.1"
 
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
@@ -1513,6 +1525,10 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mkdirp@~0.3.5:
+  version "0.3.5"
+  resolved "http://registry.npm.taobao.org/mkdirp/download/mkdirp-0.3.5.tgz#de3e5f8961c88c787ee1368df849ac4413eca8d7"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/ms/download/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -1537,6 +1553,14 @@ natural-compare@^1.4.0:
 nice-try@^1.0.4:
   version "1.0.4"
   resolved "http://registry.npm.taobao.org/nice-try/download/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
+
+node-echo@^0.1.1:
+  version "0.1.1"
+  resolved "http://registry.npm.taobao.org/node-echo/download/node-echo-0.1.1.tgz#49e2ef18214f51cdadacee39f344002f676851de"
+  dependencies:
+    coffee-script "~1.7.1"
+    jistype "0.0.3"
+    mkdirp "~0.3.5"
 
 normalize-package-data@^2.3.2:
   version "2.4.0"

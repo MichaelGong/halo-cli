@@ -2,9 +2,20 @@
 
 const program = require('commander');
 const inquirer = require('inquirer');
-const templateJson = require('../projecttemplate.json');
-const setJson = require('../lib/setJson');
+const {
+  customConfig,
+  setCustomConfig,
+} = require('../lib/setCustomConfig'); // 用户自定义配置
 
+const handleCustom = function handleCustom(config) {
+  setCustomConfig(config).then(() => {
+    console.log();
+    console.log('    添加项目模板成功');
+    console.log();
+  }).catch((err) => {
+    console.log(err);
+  });
+};
 program
   .usage('<template name> <template url>')
   .description(`<template name> 模板名称
@@ -15,22 +26,29 @@ const args = program.args;
 if (args && args.length < 2) {
   return program.help();
 }
-if (templateJson[args[0]]) {
+
+if (customConfig[args[0]]) {
   inquirer.prompt([{
     name: 'isDel',
-    message: `${templateJson[args[0]]}模板已经存在，是否删除原模板？`,
+    message: `${args[0]}模板已经存在，是否删除原模板？`,
     type: 'confirm',
     default: true,
   }]).then((data) => {
     if (data.isDel) {
-      templateJson[args[0]] = args[1];
-      setJson(templateJson).then((err) => {
-        if (err) throw err;
-        console.log();
-        console.log('    添加项目模板成功');
-        console.log();
-      });
+      if (typeof customConfig[args[0]] === 'object') {
+        customConfig[args[0]].registry = args[1];
+      } else {
+        customConfig[args[0]] = {};
+        customConfig[args[0]].registry = args[1];
+      }
+      customConfig[args[0]].registry = args[1];
+      handleCustom(customConfig);
     }
   });
+} else {
+  customConfig[args[0]] = {
+    registry: args[1],
+  };
+  handleCustom(customConfig);
 }
 

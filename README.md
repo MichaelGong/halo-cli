@@ -30,6 +30,7 @@ npm install -g halo-cli
 halo add 模板名称 模板git地址
 ```
 > git地址请填写完整的git地址，如需指明分支，请使用`#`分隔，如：`git@github.com:MichaelGong/vue-template.git#vue`，会直接获取vue分支，如果不写分支，默认获取master分支内容。
+
 ③ 检查模板是否添加成功（可选）
 ``` bash
 halo ls

@@ -20,7 +20,6 @@ halo del 模板名称
 ```
 > git地址请填写完整的git地址，如需指明分支，请使用`#`分隔，如：git@github.com:MichaelGong/vue-template.git#vue，会直接获取vue分支，分支默认master
 
-
 ### 本地测试命令
 ``` bash
 node ../halo-cli/bin/halo.js // 相对路径即可
